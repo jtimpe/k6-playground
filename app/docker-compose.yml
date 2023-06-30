@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  # db:
+  #   image: postgres:latest
+  #   environment:
+  #     - PGDATA=/var/lib/postgresql/data/
+  #     - POSTGRES_DB=tdrs_test
+  #     - POSTGRES_PASSWORD=something_secure
+  #     - POSTGRES_PORT=5432
+  #     - POSTGRES_USER=tdpuser
+  #   ports:
+  #     - "5432:5432"
+
+  api:
+    build: .
+    command: flask run --host=0.0.0.0 --debug
+    volumes:
+      - .:/app
+    # depends_on:
+    #   - db
+
+  proxy:
+    image: nginx:latest
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - 8000:8000
+    depends_on:
+      - api
